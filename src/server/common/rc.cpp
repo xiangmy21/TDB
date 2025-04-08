@@ -10,7 +10,7 @@ const char *strrc(RC rc)
   switch (rc) {
     DEFINE_RCS;
     default: {
-      return "unkown";
+      return "unknown";
     }
   }
 #undef DEFINE_RC

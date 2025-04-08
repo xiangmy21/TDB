@@ -20,14 +20,14 @@
 class FrameId 
 {
 public:
-  FrameId(int file_desc, PageNum page_num);
-  bool    equal_to(const FrameId &other) const;
-  bool    operator==(const FrameId &other) const;
-  size_t  hash() const;
-  int     file_desc() const;
-  PageNum page_num() const;
+  FrameId(int file_desc, PageNum page_num); // file_desc 文件描述符，page_num 页面编号
+  bool    equal_to(const FrameId &other) const; // 判断两个FrameId是否相等
+  bool    operator==(const FrameId &other) const; // 重载==运算符
+  size_t  hash() const; // 计算FrameId的哈希值
+  int     file_desc() const; // 获取文件描述符
+  PageNum page_num() const; // 获取页面编号
 
-  friend std::string to_string(const FrameId &frame_id);
+  friend std::string to_string(const FrameId &frame_id); // 将FrameId转换为字符串 
 private:
   int     file_desc_;
   PageNum page_num_;

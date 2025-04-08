@@ -49,11 +49,32 @@ Frame *FrameManager::get(int file_desc, PageNum page_num)
 }
 
 /**
- * TODO [Lab1] 需要同学们实现页帧驱逐
+ * DONE [Lab1] 需要同学们实现页帧驱逐
  */
 int FrameManager::evict_frames(int count, std::function<RC(Frame *frame)> evict_action)
 {
-  return 0;
+  int evicted_count = 0;
+  std::scoped_lock lock_guard(lock_);
+  // 遍历frames_，找到可以驱逐的帧
+  std::list<Frame *> frames;
+  frames_.foreach([&frames](const FrameId &frame_id, Frame *const frame) -> bool {
+    if (frame->can_evict()) {
+      frames.push_back(frame);
+    }
+    return true;
+  });
+  // 对frames中的帧进行驱逐
+  while(evicted_count < count && !frames.empty()) {
+    Frame *frame = frames.front();
+    frames.pop_front();
+    RC rc = evict_action(frame);
+    if (rc == RC::SUCCESS) {
+      frames_.remove(frame->frame_id());
+      allocator_.free(frame);
+      evicted_count++;
+    }
+  }
+  return evicted_count;
 }
 
 Frame *FrameManager::get_internal(const FrameId &frame_id)
